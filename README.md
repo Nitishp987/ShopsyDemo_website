@@ -1,4 +1,9 @@
 # ShopsyDemo_website
+Before running thie Website 
+npm install -D tailwindcss@latest @tailwindcss/postcss@latest 
+postcss@latest autoprefixer@latest vite
+run this command on terminal for Node file and the run
+npm run start
 🛍️ Shopsy - E-commerce Website
 📊 Final Project Presentation
 🔹 Slide 1: Project Title
