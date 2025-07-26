@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Details - ShopEase</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #24292e;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .cart-icon {
+      position: relative;
+      font-size: 18px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+
+    .product-detail {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: auto;
+      gap: 40px;
+    }
+
+    .product-image {
+      flex: 1 1 400px;
+      max-width: 500px;
+    }
+
+    .product-image img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .product-info {
+      flex: 1 1 400px;
+    }
+
+    .product-info h2 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .product-info p {
+      margin: 10px 0;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 10px 25px;
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #e05500;
+    }
+
+    .quantity-label {
+      display: block;
+      margin-top: 15px;
+    }
+
+    #addMessage {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    #addMessage.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .product-detail {
+        flex-direction: column;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">🛍️ ShopEase</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#contact">Contact</a>
+      <span class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cartCount">0</span>
+      </span>
+    </nav>
+  </header>
+
+  <div class="product-detail" id="productDetail">
+    <!-- Product details will be loaded here -->
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    const cartCount = document.getElementById('cartCount');
+
+    updateCartCount();
+
+    async function fetchProduct() {
+      try {
+        const res = await fetch(`https://fakestoreapi.com/products/${productId}`);
+        const product = await res.json();
+
+        const container = document.getElementById('productDetail');
+        container.innerHTML = `
+          <div class="product-image">
+            <img src="${product.image}" alt="${product.title}" loading="lazy">
+          </div>
+          <div class="product-info">
+            <h2>${product.title}</h2>
+            <p class="price">₹${(product.price * 80).toFixed(2)}</p>
+            <p>${product.description}</p>
+            <label class="quantity-label">Quantity:
+              <input type="number" id="quantity" value="1" min="1" style="width:60px;">
+            </label>
+            <button class="btn" onclick="addToCart(${product.id}, \`${product.title}\`, ${product.price * 80}, '${product.image}')">Add to Cart</button>
+            <div id="addMessage">Item added to cart!</div>
+          </div>
+        `;
+      } catch (error) {
+        document.getElementById('productDetail').innerHTML = `<p>Product not found.</p>`;
+      }
+    }
+
+    function addToCart(id, title, price, image) {
+      let qty = parseInt(document.getElementById('quantity').value);
+      if (isNaN(qty) || qty <= 0) {
+        alert("Quantity must be at least 1");
+        return;
+      }
+
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      let index = cart.findIndex(item => item.id === id);
+      if (index >= 0) {
+        cart[index].quantity += qty;
+      } else {
+        cart.push({ id, title, price, image, quantity: qty });
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      showMessage();
+    }
+
+    function updateCartCount() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      let totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCount.textContent = totalQty;
+    }
+
+    function showMessage() {
+      const msg = document.getElementById('addMessage');
+      msg.classList.add('show');
+      setTimeout(() => {
+        msg.classList.remove('show');
+      }, 2000);
+    }
+
+    fetchProduct();
+  </script>
+
+</body>
+</html>

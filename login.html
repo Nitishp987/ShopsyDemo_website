@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Optimized E-Commerce Website</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-" crossorigin="anonymous" />
+</head>
+<body>
+
+  <!-- Header and Navigation -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">MyShop</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#contactme">Contact</a></li>
+        <li><a href="#login">Login</a></li>
+        <li><a href="#signup">Signup</a></li>
+        <li>
+          <a href="#cart">
+            <i class="fa fa-shopping-cart"></i><span class="cart-badge">3</span>
+          </a>
+        </li>
+      </ul>
+      <div class="hamburger">
+        <i class="fa fa-bars"></i>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Welcome to MyShop</h1>
+      <p>Your one-stop destination for the best products and deals.</p>
+      <a href="#products" class="cta-button">Shop Now</a>
+    </div>
+  </section>
+
+  <!-- Contact Us Section -->
+  <div class="contactus-form-container" id="contactme">
+    <div class="container">
+      <h1 class="contactus-heading">Contact Us</h1>
+      <h3 class="contactus-subheading">
+        Questions, thoughts, or just want to say hello?
+      </h3>
+      <div class="contactus-form-container">
+        <form class="form" action="https://formspree.io/f/mwkgrjjj" method="POST">
+          <div class="formfield-container">
+            <input class="formfield" type="text" name="name" placeholder="Enter your name" required />
+            <input class="formfield" type="email" name="email" placeholder="Enter your email address" required />
+            <input class="formfield" type="text" name="subject" placeholder="Enter your subject" required />
+            <textarea class="formfield" name="message" cols="30" rows="10" placeholder="Enter your message" required></textarea>
+          </div>
+          <div>
+            <button type="submit" class="btn-pink" id="submit-btn">
+              Send Message<i class="submit-icon fa-solid fa-paper-plane"></i>
+            </button>
+          </div>
+        </form>
+        <p class="form-success-message" style="display: none; color: green; text-align: center; margin-top: 1rem;">Thank you! Your message has been sent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 MyShop. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const form = document.querySelector(".form");
+    const successMessage = document.querySelector(".form-success-message");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json"
+        }
+      });
+      if (response.ok) {
+        form.reset();
+        successMessage.style.display = "block";
+      }
+    });
+  </script>
+
+</body>
+</html>
